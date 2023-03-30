@@ -20,42 +20,5 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 
-import logging
-import time
-
-import buster.port as portbuster
-from solver import math, secrecy
-import downloader
-import taskSolutions
-
-
-def main():
-    addr = '152.66.249.144'
-    portbuster.init_bust(ip_addr=addr, delay=500, timeout=400)
-    soc = portbuster.connect(addr)
-
-    soc, res = math.solve_equations(soc)
-
-    soc = taskSolutions.task_EncryptHash(soc)
-
-    soc = taskSolutions.task_SolveExtend(soc)
-
-    # text = math.roll_dem_dice(res)
-    # soc.send(bytes(text, 'utf-8'))
-    time.sleep(0.3)
-    rec = str(soc.recv(1024), 'utf-8')
-    logging.info(f'Response for hash: {rec}')
-    if rec.startswith('Correct') is False:
-        soc.close()
-        exit(2)
-
-    taskSolutions.task_navigate_web(soc)
-    soc.close()
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-    main()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+def login() -> None:
+    pass
