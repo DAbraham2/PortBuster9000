@@ -23,7 +23,7 @@
 import socket
 import time
 import logging
-from solver import secrecy
+from solution.solver import secrecy
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +104,6 @@ def roll_dem_dice(base_text: str) -> tuple[str, str]:
     i = 0
     while True:
         text = f'{base_text}{i:x}'
-        logger.debug(f'tried str: {text}')
         _hash = secrecy.encrypt_str(text)
         if _hash.startswith('0000'):
             logger.info(f'Found str: {text} with hash: {_hash}')

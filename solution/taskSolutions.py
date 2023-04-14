@@ -19,13 +19,26 @@
 #  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
+
+#  MIT License
+#
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#
 import logging
 import socket
 import time
 
 import requests as requests
+import urllib3
 
-from solver import secrecy, math
+from .solver import secrecy, math
 
 logger = logging.getLogger(__name__)
 
@@ -72,14 +85,19 @@ def task_navigate_web(soc: socket.socket) -> None:
     # rec = str(soc.recv(1024), 'utf-8')
     # logger.info(f'Received: {rec}')
 
+    urllib3.disable_warnings()
+
     url = 'http://152.66.249.144'
     s = requests.Session()
     r = s.post(url, data={'neptun': 'DASGYJ', 'password': 'crysys'})
-    logger.info(r.text)
+    logger.debug(r.text)
     cert = s.get(url + '/getcert.php')
+    logger.debug(cert.content)
     open('clientcert.pem', 'wb').write(cert.content)
     key = s.get(url + '/getkey.php')
+    logger.debug(key.content)
     open('clientkey.pem', 'wb').write(key.content)
     response = requests.get('https://152.66.249.144', cert=('clientcert.pem', 'clientkey.pem'), verify=False,
                             headers={'User-Agent': 'CrySyS'})
     logger.info(f'GET {response.status_code} with body: {response.text}')
+    print(f'The final result: {response.text}')

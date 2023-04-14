@@ -20,5 +20,33 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 
-def login() -> None:
-    pass
+from .buster import port as portbuster
+from .solver import math
+import solution.taskSolutions as taskSolutions
+
+import time
+import logging
+
+
+def run():
+    addr = '152.66.249.144'
+    portbuster.init_bust(ip_addr=addr, delay=550, timeout=400)
+    soc = portbuster.connect(addr)
+
+    soc, res = math.solve_equations(soc)
+
+    soc = taskSolutions.task_EncryptHash(soc)
+
+    soc = taskSolutions.task_SolveExtend(soc)
+
+    # text = math.roll_dem_dice(res)
+    # soc.send(bytes(text, 'utf-8'))
+    time.sleep(0.3)
+    rec = str(soc.recv(1024), 'utf-8')
+    logging.debug(f'Response for hash: {rec}')
+    if rec.startswith('Correct') is False:
+        soc.close()
+        exit(2)
+
+    taskSolutions.task_navigate_web(soc)
+    soc.close()
