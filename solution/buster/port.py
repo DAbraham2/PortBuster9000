@@ -1,5 +1,3 @@
-
-
 #  MIT License
 #
 #  Copyright (c) 2023 Daniel Abraham - daniel.abraham@edu.bme.hu
@@ -62,9 +60,7 @@ def connect(ip_addr: str) -> socket.socket:
     """
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # s.setblocking(False)
     s.connect((ip_addr, 8888))
-    # s.sendall(bytes("DASGYJ", 'utf-8'))
     rec = str(s.recv(1024), 'utf-8')
     rec = rec.strip()
     print(f'Received: {rec}')
@@ -72,5 +68,9 @@ def connect(ip_addr: str) -> socket.socket:
     if rec == "Give me your neptun code:":
         print("What a gentleman!")
         s.sendall(bytes("DASGYJ", 'utf-8'))
+    else:
+        s.close()
+        print('Who even are you?')
+        exit(1)
 
     return s

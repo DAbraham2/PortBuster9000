@@ -46,16 +46,31 @@ NEPTUN_TO_EXTEND: str = ''
 
 
 def task_EncryptHash(soc: socket.socket) -> socket.socket:
+    """
+    A kővetkező lépésben el kell küldeni a szerver részére a neptun kód és
+    az utolsó feladvány eredményének az összefűzéséből keletkezett string
+    SHA1 hashét. Pl.:\n
+    \n
+    Now give me the (lowercase) sha1 hash of your neptun\n
+    concatenated with the last result!\n
+    sha1(’NEPTUN-10001’):
+
+    :param soc:
+    :return:
+    """
     global NEPTUN_TO_EXTEND
     time.sleep(0.3)
     rec = str(soc.recv(1024), 'utf-8')
     logger.info(f'Received: {rec}')
     challenge = rec.splitlines()
-    if len(challenge) == 3:  # and challenge[0].startswith('Now give me'):
+    if len(challenge) == 3 and challenge[1].startswith('Now give me'):
         last_index = challenge[2].find('\'', 7)
         NEPTUN_TO_EXTEND = challenge[2][6:last_index]
         enc = secrecy.encrypt_str(NEPTUN_TO_EXTEND)
         soc.send(bytes(enc, 'utf-8'))
+    else:
+        logger.error('Incorrect format')
+        exit(4)
 
     return soc
 
@@ -76,15 +91,14 @@ def task_SolveExtend(soc: socket.socket) -> socket.socket:
     if len(challenge) == 3 and challenge[0].startswith('Now extend'):
         text, _hash = math.roll_dem_dice(NEPTUN_TO_EXTEND)
         soc.send(bytes(text, 'utf-8'))
+    else:
+        logger.error('Incorrect format')
+        exit(5)
 
     return soc
 
 
 def task_navigate_web(soc: socket.socket) -> None:
-    # time.sleep(0.2)
-    # rec = str(soc.recv(1024), 'utf-8')
-    # logger.info(f'Received: {rec}')
-
     urllib3.disable_warnings()
 
     url = 'http://152.66.249.144'
@@ -100,4 +114,4 @@ def task_navigate_web(soc: socket.socket) -> None:
     response = requests.get('https://152.66.249.144', cert=('clientcert.pem', 'clientkey.pem'), verify=False,
                             headers={'User-Agent': 'CrySyS'})
     logger.info(f'GET {response.status_code} with body: {response.text}')
-    print(f'The final result: {response.text}')
+    print(f'The final result:\n\n {response.text}')

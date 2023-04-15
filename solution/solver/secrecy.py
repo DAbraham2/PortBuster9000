@@ -27,18 +27,6 @@ from Cryptodome.Hash import SHA1
 logger = logging.getLogger(__name__)
 
 
-def encrypt(last_result: int) -> str:
-    """
-
-    :param last_result:
-    :return:
-    """
-    h = SHA1.new(bytes('DASGYJ' + str(last_result), 'utf-8'))
-    val = h.hexdigest().lower()
-    logger.info(f'Calculated hash: {val}')
-    return val
-
-
 def encrypt_str(text: str) -> str:
     """
     Encrypts a string with SHA1
@@ -47,5 +35,4 @@ def encrypt_str(text: str) -> str:
     """
     h = SHA1.new(bytes(text, 'utf-8'))
     val = h.hexdigest().lower()
-    # logger.debug(f'Calculated hash: {val}')
     return val

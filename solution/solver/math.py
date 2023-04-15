@@ -97,9 +97,9 @@ def __solve(equation: str) -> int:
 
 def roll_dem_dice(base_text: str) -> tuple[str, str]:
     """
-
-    :param last_result:
-    :return:
+    This function finds a suitable extension to a base text that gives a hash stating with '0000'
+    :param base_text: The text to extend
+    :return: return a tuple of strings. The first is the text. The second is the given hash.
     """
     i = 0
     while True:

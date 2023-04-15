@@ -28,7 +28,11 @@ import time
 import logging
 
 
-def run():
+def run() -> None:
+    """
+    Runs the solutions.
+    :return:
+    """
     addr = '152.66.249.144'
     portbuster.init_bust(ip_addr=addr, delay=550, timeout=400)
     soc = portbuster.connect(addr)
@@ -39,14 +43,12 @@ def run():
 
     soc = taskSolutions.task_SolveExtend(soc)
 
-    # text = math.roll_dem_dice(res)
-    # soc.send(bytes(text, 'utf-8'))
     time.sleep(0.3)
     rec = str(soc.recv(1024), 'utf-8')
     logging.debug(f'Response for hash: {rec}')
     if rec.startswith('Correct') is False:
         soc.close()
-        exit(2)
+        exit(6)
 
     taskSolutions.task_navigate_web(soc)
     soc.close()
